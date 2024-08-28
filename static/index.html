@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Transcript Generator</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #000;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        #transcriptResult {
+            margin-top: 10px;
+            font-size: 16px;
+            background-color: #f0f0f0; /* Light gray background */
+            padding: 10px;
+            border-radius: 5px;
+            width: 80%; /* Adjust width as needed */
+            text-align: center; /* Center the text */
+            display: none; /* Hide by default */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>YouTube Transcript Generator and Summarizer</h1>
+    
+    <input type="text" id="youtubeUrl" placeholder="Enter YouTube URL">
+    <button id = "generate">Generate summary</button>
+    <div id="spinnerContainer" class="spinner"></div>
+    <div id="transcriptResult"></div>
+    <footer>
+        <p>Built w/ 🧡 in SF🌁 on <a href="https://workers.cloudflare.com/" target="_blank">Cloudflare Workers</a> with <a href="https://ai.cloudflare.com" target="_blank">Workers AI</a>👩🏻‍💻 ➡️ <a href="https://github.com/elizabethsiegle/cfworkers-ai-translate" target="_blank">code</a></p>
+    </footer>
+
+    <script>
+        document.getElementById('generate').onclick = async function() {
+            // Show spinner and hide brat result
+            document.getElementById('spinnerContainer').style.display = 'block';
+            document.getElementById('transcriptResult').style.display = 'none';
+            document.getElementById('transcriptResult').innerText = '';
+            const url = document.getElementById('youtubeUrl').value;
+            console.log(url);
+            const response = await fetch('/transcript', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            });
+            const res = await response.json();
+            console.log(JSON.stringify(res));
+            const transcriptionResp = res.response ?? "No response found.";
+            // Hide spinner and show brat result
+            document.getElementById('spinnerContainer').style.display = 'none';
+            document.getElementById('transcriptResult').innerText = transcriptionResp;
+            document.getElementById('transcriptResult').style.display = 'block';
+
+        }
+    </script>
+</body>
+</html>
