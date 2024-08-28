@@ -30,24 +30,23 @@ export default {
                 headers: { 'Content-Type': 'text/html' },
             });
         } else if (request.method === 'POST' && url.pathname === '/transcript') {
-			const { url } = await request.json();
-			console.log(`url hurr ${url}`);
+			const { url, model, styleValue } = await request.json();
+			console.log(`url, model, styleValue, ${url}, ${model}, ${styleValue}`);
 			const transcript = await YoutubeTranscript.fetchTranscript(url); //https://www.youtube.com/watch?v=8RCL5neas_M
         	const sentences = Array.from(extractSentencesFromTranscript(transcript));
-			console.log(`request.body ${JSON.stringify(request.body)}`)
-      		await env.MY_BUCKET.put(sentences, request.body);
-      		console.log(`Object ${sentences} uploaded successfully!`);
 			
 			const messages = [
 				{ role: "system", content: "You are a friendly assistant" },
 				{
 				  role: "user",
-				  content: `Summarize the given YouTube video transcript: ${sentences}`,
+				  content: `Summarize the following YouTube transcript: ${sentences}. The creativity and hilarity of the summary should be a ${styleValue} on a scale from 0 to 5 (where 5 is most creative and fun). Do not mention anything besides a summary of the transcript.`,
 				},
 			];
-			const response = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", { messages });
-			console.log(`response ${JSON.stringify(response)}`);
-			return new Response(JSON.stringify(response), {
+			const summary = await env.AI.run(model, { messages });
+			console.log(`response ${JSON.stringify(summary)}`);
+			return new Response(JSON.stringify(
+				summary
+			), {
 				headers: { 'Content-Type': 'application/json' },
 			});
 		}
