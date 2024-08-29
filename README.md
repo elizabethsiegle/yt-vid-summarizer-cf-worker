@@ -11,11 +11,11 @@ npm install
 Build
 
 ```
-npm run dev
+npx wrangler dev
 ```
 
 Deploy
 
 ```
-npm run deploy
+npx wrangler deploy
 ```
