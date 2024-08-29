@@ -140,7 +140,7 @@
             const detailLevel = document.getElementById('detail').value;
             const resp = await fetch('/transcript', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', accept: 'application/json' },
                 body: JSON.stringify({ url, detailLevel })
             });
             const res = await resp.json();
