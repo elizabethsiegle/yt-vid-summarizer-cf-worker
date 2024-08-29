@@ -7,7 +7,6 @@ node_compat = true
 [ai]
 binding = "AI"
 
-[[d1_databases]]
-binding = "DB" # i.e. available in your Worker on env.DB
-database_name = "transcripts"
-database_id = "5926ee79-59e6-4626-8547-a7c3869c2673"
+[[kv_namespaces]]
+binding = "TRANSCRIPTS"
+id = "79006f91f76d434f819a3287fdedf800"

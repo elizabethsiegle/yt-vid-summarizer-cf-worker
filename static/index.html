@@ -3,124 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Transcript Generator</title>
+    <title>YouTube Transcript Generator and Summarizer</title>
     <style>
         body {
-    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-    background: linear-gradient(to right, #ff7e5f, #feb47b);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh; /* Ensure the body takes full viewport height */
-    margin: 0;
-}
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+            background: linear-gradient(to right, #001f3f, #004080); /* Navy background gradient */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #FFFFFF; /* Light color for text for better readability */
+        }
 
-.container {
-    flex: 1; /* Allows the container to take up available space */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-}
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
 
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-}
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #FFD700; /* Gold color for the header */
+        }
 
-input[type="text"] {
-    width: 300px;
-    padding: 10px;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    text-align: center;
-}
+        label {
+            color: #FFFFFF; /* Light color for labels */
+            margin-bottom: 5px;
+        }
 
-button {
-    margin-top: 15px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
+        input[type="text"], input[type="range"] {
+            width: 300px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 10px; /* Reduced margin for spacing between inputs */
+        }
 
-button:hover {
-    background-color: #0056b3;
-}
+        button {
+            margin-top: 15px;
+            padding: 15px 25px; /* Increase padding for a larger button */
+            background-color: #FF4500; /* Orange-red color for the button */
+            color: white;
+            border: none;
+            border-radius: 8px; /* More rounded corners for a cooler look */
+            cursor: pointer;
+            font-size: 18px; /* Larger font size */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Add shadow for a 3D effect */
+            transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transition for hover effect */
+        }
 
-.spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-top: 4px solid #000;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    display: none;
-}
+        button:hover {
+            background-color: #FF6347; /* Slightly lighter shade on hover */
+            transform: scale(1.05); /* Slightly increase the size on hover */
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.4); /* Larger shadow on hover */
+        }
 
-#transcriptResult {
-    margin-top: 10px;
-    font-size: 16px;
-    background-color: #f0f0f0; /* Light gray background */
-    padding: 10px;
-    border-radius: 5px;
-    width: 80%; /* Adjust width as needed */
-    text-align: center; /* Center the text */
-    display: none; /* Hide by default */
-}
-      
-      
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1); /* White color with some transparency */
+            border-top: 4px solid #FFFFFF; /* Solid white color for the top border */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin-top: 20px; /* Move the spinner down slightly */
+        }
 
-footer {
-    width: 100%;
-    text-align: center;
-    font-size: 14px;
-    margin-top: auto; /* Push the footer to the bottom */
-    padding: 10px 0;
-}
+        a {
+            color: #FF69B4; /* Initial link color (light pink) */
+            text-decoration: none; /* Remove underline for a cleaner look */
+        }
+
+        a:hover {
+            color: #FF1493; /* Darker pink when hovered over */
+        }
+
+        a:active {
+            color: #FF69B4; /* Same pink as initial color when clicked */
+        }
+
+        #transcriptResult {
+            margin-top: 10px;
+            font-size: 16px;
+            background-color: #003366; /* Darker blue, same as the footer */
+            padding: 10px;
+            border-radius: 5px;
+            width: 80%;
+            text-align: center;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            padding: 10px 0;
+            background-color: #002147; /* Slightly lighter than the body background */
+        }
+
     </style>
 </head>
 <body>
-
-    <h1>YouTube Transcript Generator and Summarizer</h1>
-    <label for="youtubeUrl">What video do you want to summarize?</label>
+    <h1>YouTube📹 Transcript📝 Generator && Summarizer</h1>
+    <label for="youtubeUrl">What video do you want to summarize? (Transcript available on Cloudflare KV)</label>
     <input type="text" id="youtubeUrl" placeholder="Enter YouTube URL">
-    <label for="model">Choose a Model:</label>
-    <select id="model" name="model" required>
-        <option value="@cf/meta/llama-2-7b-chat-int8">@cf/meta/llama-2-7b-chat-int8</option>
-        <option value="@cf/meta/llama-2-7b-chat-fp16">@cf/meta/llama-2-7b-chat-fp16</option>
-        <option value="@cf/meta/llama-3-8b-instruct">@cf/meta/llama-3-8b-instruct</option>
-        <option value="@cf/meta/llama-3-8b-instruct-awq">@cf/meta/llama-3-8b-instruct-awq</option>
-        <option value="@cf/mistral/mistral-7b-instruct-v0.1">@cf/mistral/mistral-7b-instruct-v0.1</option>
-        <option value="@hf/mistral/mistral-7b-instruct-v0.2">@hf/mistral/mistral-7b-instruct-v0.2</option>
-        <option value="@cf/mistral/mistral-7b-instruct-v0.2-lora">@cf/mistral/mistral-7b-instruct-v0.2-lora</option>
-        <option value="@cf/openchat/openchat-3.5-0106">@cf/openchat/openchat-3.5-0106</option>
-        <option value="@cf/tinyllama/tinyllama-1.1b-chat-v1.0">@cf/tinyllama/tinyllama-1.1b-chat-v1.0</option>
-        <option value="@hf/google/gemma-7b-it">@hf/google/gemma-7b-it</option>
-        <option value="@hf/nexusflow/starling-lm-7b-beta">@hf/nexusflow/starling-lm-7b-beta</option>
-        <option value="@hf/nousresearch/hermes-2-pro-mistral-7b">@hf/nousresearch/hermes-2-pro-mistral-7b</option>
-        <option value="@hf/thebloke/codellama-7b-instruct-awq">@hf/thebloke/codellama-7b-instruct-awq</option>
-        <option value="@hf/thebloke/mistral-7b-instruct-v0.1-awq">@hf/thebloke/mistral-7b-instruct-v0.1-awq</option>
-        <option value="@hf/thebloke/neural-chat-7b-v3-1-awq">@hf/thebloke/neural-chat-7b-v3-1-awq</option>
-        <option value="@hf/thebloke/openhermes-2.5-mistral-7b-awq">@hf/thebloke/openhermes-2.5-mistral-7b-awq</option>
-    </select>
-    <label for="style">LLM temperature🔥 for summary:</label>
-    <input type="range" id="style" name="style" min="0" max="5" value="0" oninput="document.getElementById('styleValue').textContent = this.value">
-    <span id="styleValue">0</span>
-    <button id = "generate">Generate summary</button>
+    <label for="detail">How much detail should the summary include? (0 is less detail, 5 is the most detail)</label>
+    <input type="range" id="detail" name="detail" min="0" max="5" value="0" oninput="document.getElementById('detailValue').textContent = this.value">
+    <span id="detailValue">0</span>
+    <button id = "generate">Generate summary!</button>
     <div id="spinnerContainer" class="spinner"></div>
     <div id="transcriptResult"></div>
     <footer>
-        <p>Built w/ 🧡 in SF🌁 on <a href="https://workers.cloudflare.com/" target="_blank">Cloudflare Workers</a> with <a href="https://ai.cloudflare.com" target="_blank">Workers AI</a>👩🏻‍💻 ➡️ <a href="https://github.com/elizabethsiegle/cfworkers-ai-translate" target="_blank">code</a></p>
+        <p>Built w/ 🧡 in SF🌁 on <a href="https://workers.cloudflare.com/" target="_blank">Cloudflare Workers</a> with <a href="https://ai.cloudflare.com" target="_blank">Workers AI</a> and <a href="https://developers.cloudflare.com/kv/get-started/" target="_blank">KV</a>👩🏻‍💻 ➡️ <a href="https://github.com/elizabethsiegle/yt-vid-summarizer-cf-worker" target="_blank">code</a></p>
     </footer>
     <script>
         document.getElementById('generate').onclick = async function() {
@@ -129,12 +137,11 @@ footer {
             document.getElementById('transcriptResult').style.display = 'none';
             document.getElementById('transcriptResult').innerText = '';
             const url = document.getElementById('youtubeUrl').value;
-            const model = document.getElementById('model').value;
-            const styleValue = document.getElementById('style').value;
+            const detailLevel = document.getElementById('detail').value;
             const resp = await fetch('/transcript', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url, model, styleValue })
+                body: JSON.stringify({ url, detailLevel })
             });
             const res = await resp.json();
             const transcriptionResp = res.response ?? "No response found.";

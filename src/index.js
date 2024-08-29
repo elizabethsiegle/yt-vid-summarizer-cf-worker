@@ -30,19 +30,33 @@ export default {
                 headers: { 'Content-Type': 'text/html' },
             });
         } else if (request.method === 'POST' && url.pathname === '/transcript') {
-			const { url, model, styleValue } = await request.json();
-			console.log(`url, model, styleValue, ${url}, ${model}, ${styleValue}`);
-			const transcript = await YoutubeTranscript.fetchTranscript(url); //https://www.youtube.com/watch?v=8RCL5neas_M
-        	const sentences = Array.from(extractSentencesFromTranscript(transcript));
-			
+			const { url, detailLevel } = await request.json();
+			const model = '@cf/meta/llama-3.1-8b-instruct'; // can use a diff one 
+			console.log(`url, Number(detailLevel): ${url}, ${detailLevel}`); 
+			let transcript = await env.TRANSCRIPTS.get(url);
+			console.log(`transcript outside ${transcript}`)
+			if (transcript == undefined) {  // cached
+				transcript = await YoutubeTranscript.fetchTranscript(url); //https://www.youtube.com/watch?v=8RCL5neas_M
+        		const sentences = Array.from(extractSentencesFromTranscript(transcript));
+				transcript = sentences.join("\n");
+				console.log(`transcript ${transcript}`);
+				await env.TRANSCRIPTS.put(url, transcript); //key = yt url
+				console.log(`Put ${url} successfully!`);
+			}
+
 			const messages = [
 				{ role: "system", content: "You are a friendly assistant" },
 				{
 				  role: "user",
-				  content: `Summarize the following YouTube transcript: ${sentences}. The creativity and hilarity of the summary should be a ${styleValue} on a scale from 0 to 5 (where 5 is most creative and fun). Do not mention anything besides a summary of the transcript.`,
+				  content: `Summarize the following YouTube transcript: ${transcript}. On a scale of 0 (less detail) to 5 (more detail), the summary should have a detail level of ${detailLevel}. Do not mention anything besides a summary of the transcript.`,
 				},
 			];
-			const summary = await env.AI.run(model, { messages });
+			const summary = await env.AI.run(model,
+				{ 
+					temperature: 1,
+					messages 
+				}
+			);
 			console.log(`response ${JSON.stringify(summary)}`);
 			return new Response(JSON.stringify(
 				summary
